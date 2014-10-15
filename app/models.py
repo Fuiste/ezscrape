@@ -27,7 +27,10 @@ class Property(models.Model):
     yelp_processing = models.BooleanField(null=False, default=False)
 
     def get_property_status_dict(self):
-        return {"yelp": self.yelp_scraped, "reviews": [r.get_ember_dict() for r in self.reviews.all()]}
+        if self.yelp_scraped:
+            return {"yelp": self.yelp_scraped, "reviews": [r.id for r in self.reviews.all()]}
+        else:
+            return {"yelp": self.yelp_scraped, "reviews": [r.get_ember_dict() for r in self.reviews.all()]}
 
 
 class ScrapedTextProvider(models.Model):
