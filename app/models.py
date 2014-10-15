@@ -25,6 +25,8 @@ class Property(models.Model):
     yelp_url = models.URLField(null=True)
     yelp_scraped = models.BooleanField(null=False, default=False)
     yelp_processing = models.BooleanField(null=False, default=False)
+    topics_analyzed = models.BooleanField(null=False, default=False)
+    topics_processing = models.BooleanField(null=False, default=False)
 
     def get_property_status_dict(self):
         if self.yelp_scraped:
