@@ -90,7 +90,7 @@ class Spiderman(Crawler):
     # text_sage = TextSage()
 
     def __init__(self, url, property_id, provider_name, rated_text=True, domains=None, relative=True,
-                 delay_interval=(10, 45),
+                 delay_interval=(3, 7),
                  verbose=True, links=None, organization_name=None, scrape_count_limit=None, review_date_cutoff=None, *args, **kwargs):
         """
         """

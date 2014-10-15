@@ -10,5 +10,6 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^/?$', QueueScrapeView.as_view()),
+    url(r'^scrape/?$', QueueScrapeView.as_view()),
+    url(r'^tag/?$', POSTagView.as_view())
 )

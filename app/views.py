@@ -18,6 +18,7 @@ class QueueScrapeView(View):
         """
         print "Recieved scrape request for upstream property {0}".format(request.POST["upstream_id"])
 
+        # Grab the property from the local db, create it if it doesn't exist
         prop_l = Property.objects.filter(upstream_id=request.POST["upstream_id"])
         if len(prop_l):
             prop = prop_l[0]
@@ -25,21 +26,17 @@ class QueueScrapeView(View):
             prop = Property(upstream_id=request.POST["upstream_id"], yelp_url=request.POST["yelp_url"])
             prop.save()
 
-        if len(prop.reviews.all()) == 0:
-            prop.yelp_scraped = False
-            prop.yelp_processing = False
-            prop.save()
-
-        # If there's no reviews yet (initial GET) grab 'em
-        if prop.yelp_scraped == False:
-            if not prop.yelp_processing == True:
+        print "Scraped: {0} Processing: {1}".format(prop.yelp_scraped, prop.yelp_processing)
+        # If scraping hasn't been run yet (initial GET) grab 'em
+        if not prop.yelp_scraped:
+            if not prop.yelp_processing:
                 prop.yelp_processing = True
                 prop.reviews.all().delete()
                 django_rq.enqueue(scrape_yelp_for_reviews, prop.id)
         else:
             print "NOTHING TO SCRAPE"
 
-        return HttpResponse(json.dumps(prop.get_property_status_dict()), content_type="application/json")
+        return HttpResponse(json.dumps(prop.get_property_scrape_dict()), content_type="application/json")
 
 
     @csrf_exempt
@@ -55,5 +52,24 @@ class POSTagView(View):
         """
         print "Recieved POS tag request for upstream property {0}".format(request.POST["upstream_id"])
 
-        return HttpResponse("This doesn't exist yet..."), content_type="application/json")
+        # Grab the property from the local db, error it if it doesn't exist
+        prop_l = Property.objects.filter(upstream_id=request.POST["upstream_id"])
+        if len(prop_l):
+            prop = prop_l[0]
+        else:
+            return HttpResponse(json.dumps({"error": 1}), content_type="application/json")
+
+        print "Analyzed: {0} Processing: {1}".format(prop.topics_analyzed, prop.topics_processing)
+        # If POS tags haven't been run, do it!
+        if not prop.topics_analyzed:
+            if not prop.topics_processing:
+                prop.topics_processing = True
+                prop.topics.all().delete()
+                django_rq.enqueue(analyze_reviews_for_topics, prop.id)
+
+        return HttpResponse(json.dumps(prop.get_property_topics_dict()), content_type="application/json")
+
+    @csrf_exempt
+    def dispatch(self, *args, **kwargs):
+        return super(POSTagView, self).dispatch(*args, **kwargs)
 

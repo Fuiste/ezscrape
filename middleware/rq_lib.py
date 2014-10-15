@@ -8,7 +8,6 @@ def scrape_yelp_for_reviews(property_id):
     rq function for scraping the yelp reviews in a worker.
     """
     prop = Property.objects.get(id=property_id)
-    prop.save()
     review_date_cutoff = 2011
     yelp_spider = YelpSpider(url=prop.yelp_url, property_id=prop.id, provider_name="Yelp", review_date_cutoff=review_date_cutoff)
     print "Starting Yelp spider."
@@ -23,6 +22,7 @@ def analyze_reviews_for_topics(property_id):
     rq function which calls out to distill-server to POS-tag sentences in reviews
     """
     prop = Property.objects.get(id=property_id)
+    print prop.topics_analyzed
     prop.save()
     docs = []
     for r in prop.reviews.all():
