@@ -7,7 +7,6 @@ class Review(models.Model):
     """
     A review of a location
     """
-    id = models.BigIntegerField(primary_key=True)
     text = models.CharField(max_length=5000)
     grade = models.IntegerField(null=True)
     created_date = models.DateTimeField(default=timezone.now(), null=False)
