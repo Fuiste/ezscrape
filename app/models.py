@@ -7,9 +7,18 @@ class Review(models.Model):
     """
     A review of a location
     """
+    id = models.BigIntegerField(primary_key=True)
     text = models.CharField(max_length=5000)
     grade = models.IntegerField(null=True)
     created_date = models.DateTimeField(default=timezone.now(), null=False)
+
+    @staticmethod
+    def get_next_id():
+        try:
+            id_gen = Review.objects.latest("id").id
+        except Review.DoesNotExist:
+            id_gen = -1
+        return id_gen + 1
 
     def get_ember_dict(self):
         return {"text": self.text, "grade": self.grade, "date": self.created_date.strftime('%Y-%m-%d'), "timestamp": time.mktime(self.created_date.timetuple()), "id": self.id}
