@@ -11,6 +11,9 @@ class Review(models.Model):
     grade = models.IntegerField(null=True)
     created_date = models.DateTimeField(default=timezone.now(), null=False)
 
+    def get_ember_dict(self):
+        return {"text": self.text, "grade": self.grade, "date": self.created_date.strftime('%Y-%m-%d'), "timestamp": time.mktime(self.created_date.timetuple()), "id": self.id}
+
 
 class Property(models.Model):
     """
@@ -20,8 +23,11 @@ class Property(models.Model):
     upstream_id = models.IntegerField(null=False, default=-1)
     reviews = models.ManyToManyField(Review, null=True)
     yelp_url = models.URLField(null=True)
-    yelp_scraped = models.BooleanField(default=False)
-    yelp_processing = models.BooleanField(default=False)
+    yelp_scraped = models.BooleanField(null=False, default=False)
+    yelp_processing = models.BooleanField(null=False, default=False)
+
+    def get_property_status_dict(self):
+        return {"yelp": self.yelp_scraped, "reviews": [r.get_ember_dict() for r in self.reviews.all()]}
 
 
 class ScrapedTextProvider(models.Model):
