@@ -253,7 +253,11 @@ class Spiderman(Crawler):
         if len(Review.objects.filter(text=content, grade=rating)):
             print "Already existed"
         else:
-            rated_scraped_text = Review(text=content, created_date=pub_date, grade=rating, id=Review.get_next_id())
+            try:
+                id_gen = Review.objects.latest("id").id
+            except Review.DoesNotExist:
+                id_gen = -1
+            rated_scraped_text = Review(text=content, created_date=pub_date, grade=rating, id=id_gen+1)
             rated_scraped_text.save()
             # Save it to this list in order to send out an alert
             property.reviews.add(rated_scraped_text)

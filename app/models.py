@@ -12,7 +12,7 @@ class Review(models.Model):
     grade = models.IntegerField(null=True)
     created_date = models.DateTimeField(default=timezone.now(), null=False)
 
-    @staticmethod
+    @classmethod
     def get_next_id():
         try:
             id_gen = Review.objects.latest("id").id
