@@ -7,6 +7,7 @@ class Review(models.Model):
     """
     A review of a location
     """
+    id = models.BigIntegerField(primary_key=True)
     text = models.CharField(max_length=5000)
     grade = models.IntegerField(null=True)
     created_date = models.DateTimeField(default=timezone.now(), null=False)
@@ -25,7 +26,7 @@ class Topic(models.Model):
     reviews = models.ManyToManyField(Review, null=True)
 
     def get_ember_dict(self):
-        return {"name": self.name, "id": self.id, "reviews": [r.text for r in self.reviews.all()]}
+        return {"name": self.name, "id": self.id, "reviews": [r.id for r in self.reviews.all()]}
 
 
 class Property(models.Model):
