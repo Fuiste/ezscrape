@@ -32,6 +32,7 @@ class QueueScrapeView(View):
             if not prop.yelp_processing:
                 prop.yelp_processing = True
                 prop.reviews.all().delete()
+                prop.save()
                 django_rq.enqueue(scrape_yelp_for_reviews, prop.id)
         else:
             print "NOTHING TO SCRAPE"
@@ -65,6 +66,7 @@ class POSTagView(View):
             if not prop.topics_processing:
                 prop.topics_processing = True
                 prop.topics.all().delete()
+                prop.save()
                 django_rq.enqueue(analyze_reviews_for_topics, prop.id)
 
         return HttpResponse(json.dumps(prop.get_property_topics_dict()), content_type="application/json")
