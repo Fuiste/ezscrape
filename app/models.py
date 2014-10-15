@@ -22,3 +22,31 @@ class Property(models.Model):
     yelp_url = models.URLField(null=True)
     yelp_scraped = models.BooleanField(default=False)
     yelp_processing = models.BooleanField(default=False)
+
+
+class ScrapedTextProvider(models.Model):
+    """Lifted directly from ReviewSage
+    """
+    name = models.CharField(max_length=50)
+    url = models.URLField(null=True, blank=True)
+    rated = models.BooleanField(default=True)
+
+    def get_fields_in_dict(self, field_names=None):
+        """Creates a dict representation of this ScrapedTextProvider
+
+        Args:
+            field_names: A list of strings of ScrapedText properties
+        Returns:
+            A dict representation of this ScrapedTextProvider
+        """
+        fields_dict = {"id": self.id}
+        if field_names:
+            for name in field_names:
+                fields_dict[name] = getattr(self, name)
+        return fields_dict
+
+    def __unicode__(self):
+        return self.name
+
+    def __str__(self):
+        return unicode(self).format("utf-8")

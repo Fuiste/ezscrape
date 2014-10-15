@@ -8,7 +8,6 @@ import urllib
 import datetime
 import urllib2
 from dateutil.relativedelta import relativedelta
-from django.core.mail import EmailMultiAlternatives
 from pattern.web import Crawler, URL, DOM, plaintext, abs
 import time
 import unicodedata
@@ -110,16 +109,6 @@ class Spiderman(Crawler):
         self.url = url
         # Newly saved reviews are put in here
         self.new_reviews = []
-
-    def email_mark_error(self, subject, content):
-        msg = EmailMultiAlternatives(subject, content, to=["mark@reviewsage.co"])
-        msg.send()
-
-    def route_request_through_reviewsage(self, url):
-        logger.info("Routing request through ReviewSage")
-        post_data = [("url", url)]
-        result = self.fetch_url(url="http://www.reviewsage.co/scraperhelp", proximo_route=False, post_data=urllib.urlencode(post_data))
-        return json.loads(result)["page"]
 
     def fetch_url(self, url, proximo_route=True, post_data=None):
         """
@@ -342,8 +331,6 @@ class YelpSpider(Spiderman):
         dom = DOM(page)
         if self.page_is_blocked(dom=dom):
             logger.info("No reviewCount span found on Yelp! Shit I wonder if we blocked n shit")
-            # result = self.route_request_through_reviewsage(url=self.url)
-            # dom = DOM(result)
             return None
         return self._generate_page_links(dom)
 

@@ -44,8 +44,6 @@ MIDDLEWARE_CLASSES = (
     'middleware.warning_exception_middleware.ProcessExceptionMiddleware',
 )
 
-print "MIDDLEWARE GOOD"
-
 ROOT_URLCONF = 'urls'
 
 WSGI_APPLICATION = 'ezscrape.wsgi.application'
