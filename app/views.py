@@ -17,7 +17,6 @@ class QueueScrapeView(View):
         Builds a new property and sets the scraper on it.  Needs the upstream id and yelp_url of the property to get started.
         """
         print "Recieved scrape request for upstream property {0}".format(request.POST["upstream_id"])
-        print request.POST["yelp_url"]
 
         prop_l = Property.objects.filter(upstream_id=request.POST["upstream_id"])
         if len(prop_l):
@@ -46,3 +45,15 @@ class QueueScrapeView(View):
     @csrf_exempt
     def dispatch(self, *args, **kwargs):
         return super(QueueScrapeView, self).dispatch(*args, **kwargs)
+
+
+class POSTagView(View):
+
+    def post(self, request):
+        """
+        POS Tags a given property for noun phrases. 
+        """
+        print "Recieved POS tag request for upstream property {0}".format(request.POST["upstream_id"])
+
+        return HttpResponse("This doesn't exist yet..."), content_type="application/json")
+
