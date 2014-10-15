@@ -26,6 +26,11 @@ class QueueScrapeView(View):
             prop = Property(upstream_id=request.POST["upstream_id"], yelp_url=request.POST["yelp_url"])
             prop.save()
 
+        if len(prop.reviews.all()) == 0:
+            prop.yelp_scraped = False
+            prop.yelp_processing = False
+            prop.save()
+
         # If there's no reviews yet (initial GET) grab 'em
         if prop.yelp_scraped == False:
             if not prop.yelp_processing == True:
