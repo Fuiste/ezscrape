@@ -39,7 +39,7 @@ def pos_tag_text_documents(text_documents):
         if len(formatted_cuts):
             found = False
             for c in formatted_cuts:
-                if len(c) < 3:
+                if len(c) < 1:
                     c.append(t)
                     found = True
             if not found:
